@@ -55,15 +55,11 @@ const setTipoVeiculo = type => {
 
 const setMarca = value => {
     modeloList.innerHTML = ''
-    anosList.innerHTML = ''
 
     marcaVeiculo = value
 
     document.getElementById('vehicles_model').disabled = false;
-    document.getElementById('vehicles_year').disabled = false;
 
-    const placHolderAno= new Option("Selecione um ano", '', false)
-    anosList.appendChild(placHolderAno)
 
     const placHolderModelo = new Option("Selecione um modelo", '', false)
     modeloList.appendChild(placHolderModelo)
@@ -77,20 +73,31 @@ const setMarca = value => {
             let listMarcaModelosList = new Option(marca.nome, marca.codigo, true)
             modeloList.appendChild(listMarcaModelosList)
         })
-        data.anos.map((marca) => {
-            let listMarcaAnosList = new Option(marca.nome, marca.codigo, true)
-            anosList.appendChild(listMarcaAnosList)
-        })
     })
 }
 
 const setModelo = value => {
     modeloVeiculo = value
+    anosList.innerHTML = ''
+    document.getElementById('vehicles_year').disabled = false;
+
+    const placHolderAno= new Option("Selecione um ano", '', false)
+    anosList.appendChild(placHolderAno)
+
+    let endPointAnos = `${baseUrl}/${tipoVeiculo}/marcas/${marcaVeiculo}/modelos/${modeloVeiculo}/anos`
+
+    fetch(endPointAnos)
+    .then((response) => response.json())
+    .then((data) => {
+        data.map((marca) => {
+            let anosModeloList = new Option(marca.nome, marca.codigo, true)
+            anosList.appendChild(anosModeloList)
+        })
+    })
 }
 
 const setAno = value => {
     anoVeiculo = value
-
 }
 const openModal = () => {
     if (marcaVeiculo && modeloVeiculo && anoVeiculo) {
